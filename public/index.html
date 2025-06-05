@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Product Order | Tiragon Trading</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; direction: ltr; }
+    label { display: block; margin-top: 10px; }
+    select, input, textarea { width: 300px; margin-top: 5px; }
+    .product-entry { margin-bottom: 15px; }
+    #submit { padding: 10px 20px; margin-top: 20px; }
+    .whatsapp { margin-top: 20px; display: block; font-weight: bold; color: green; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <img src="logo.png" alt="Logo" style="height:60px;"><br><br>
+
+  <form id="order-form" action="/submit" method="POST" enctype="multipart/form-data">
+    <label>Name:</label><input type="text" name="name" required />
+    <label>Phone:</label><input type="text" name="phone" required />
+    <label>Country:</label><input type="text" name="country" required />
+    <label>Attachment (optional):</label><input type="file" name="attachment" />
+
+    <div id="products-container">
+      <div class="product-entry">
+        <label>Product:</label>
+        <select name="product[]"></select>
+        <label>Quantity:</label>
+        <input type="number" name="weight[]" required />
+        <label>Description:</label>
+        <input type="text" name="description[]" />
+      </div>
+    </div>
+    <button type="button" id="add-product">➕ Add Product</button><br><br>
+    <button type="submit" id="submit">📩 Submit Order</button>
+  </form>
+
+  <a class="whatsapp" href="https://wa.me/971557068949" target="_blank">📞 Contact us on WhatsApp</a>
+
+  <script>
+    let products = [];
+
+    function loadProducts() {
+      fetch('lang/en.json')
+        .then(res => res.json())
+        .then(data => {
+          products = data.products;
+          populateSelects();
+        });
+    }
+
+    function populateSelects() {
+      document.querySelectorAll("select[name='product[]']").forEach(select => {
+        select.innerHTML = '';
+        products.forEach(p => {
+          const opt = document.createElement("option");
+          opt.value = p;
+          opt.innerText = p;
+          select.appendChild(opt);
+        });
+      });
+    }
+
+    document.getElementById("add-product").addEventListener("click", () => {
+      const container = document.getElementById("products-container");
+      const div = document.createElement("div");
+      div.className = "product-entry";
+      div.innerHTML = `
+        <label>Product:</label><select name="product[]"></select>
+        <label>Quantity:</label><input type="number" name="weight[]" required />
+        <label>Description:</label><input type="text" name="description[]" />
+      `;
+      container.appendChild(div);
+      populateSelects();
+    });
+
+    loadProducts();
+  </script>
+</body>
+</html>
