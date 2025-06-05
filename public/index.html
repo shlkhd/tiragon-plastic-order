@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +14,6 @@
       flex-direction: column;
       align-items: center;
     }
-
     header {
       background-color: #fff;
       width: 100%;
@@ -21,11 +21,9 @@
       padding: 30px 0 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-
     header img {
       height: 150px;
     }
-
     form {
       background: #fff;
       padding: 30px;
@@ -35,12 +33,10 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       border-radius: 10px;
     }
-
     label {
       display: block;
       margin-top: 10px;
     }
-
     select, input, textarea {
       width: 100%;
       margin-top: 5px;
@@ -48,13 +44,10 @@
       border: 1px solid #ccc;
       border-radius: 5px;
     }
-
     .product-entry {
       margin-bottom: 15px;
       padding-bottom: 10px;
       border-bottom: 1px dashed #ccc;
-    }
-   
     }
     #submit {
       padding: 12px 20px;
@@ -65,7 +58,6 @@
       margin-top: 20px;
       cursor: pointer;
     }
-
     #add-product {
       margin-top: 15px;
       background-color: #28a745;
@@ -75,7 +67,6 @@
       border-radius: 5px;
       cursor: pointer;
     }
-
     .whatsapp {
       margin: 30px 0;
       display: block;
@@ -84,7 +75,6 @@
       text-decoration: none;
       font-size: 18px;
     }
-
     .whatsapp:hover {
       text-decoration: underline;
     }
@@ -94,32 +84,27 @@
   <header>
     <img src="logo.png" alt="Logo">
   </header>
-
   <form id="order-form" method="POST" action="/submit" enctype="multipart/form-data">
     <label>Name:</label><input type="text" name="name" required />
     <label>Phone:</label><input type="text" name="phone" required />
     <label>Address:</label><input type="text" name="adress" required />
-
     <div id="products-container">
       <div class="product-entry">
         <label>Product:</label>
-        <select name="product[]"></select>
+        <select name="product[]" onchange="updateImage(this)"></select>
         <label>Quantity:</label>
         <input type="number" name="quantity[]" required />
         <label>Description:</label>
         <input type="text" name="description[]" />
+        <img class="product-image" src="" alt="Product Image" style="width: 100%; max-height: 200px; margin-top: 10px; display: none;" />
       </div>
     </div>
-
     <button type="button" id="add-product">➕ Add Product</button><br><br>
     <button type="submit" id="submit">📩 Submit Order</button>
   </form>
-
   <a class="whatsapp" href="https://wa.me/971557068949" target="_blank">📞 Contact us on WhatsApp</a>
-
   <script>
     let products = [];
-
     function loadProducts() {
       fetch('lang/en.json')
         .then(res => res.json())
@@ -128,7 +113,6 @@
           populateAllSelects();
         });
     }
-
     function populateAllSelects() {
       document.querySelectorAll("select[name='product[]']").forEach(select => {
         const currentValue = select.value;
@@ -140,26 +124,32 @@
           if (p === currentValue) opt.selected = true;
           select.appendChild(opt);
         });
+        updateImage(select);
       });
     }
-
+    function updateImage(selectElement) {
+      const productName = selectElement.value;
+      const image = selectElement.parentElement.querySelector(".product-image");
+      const imageName = productName.replace(/\s+/g, '-').toLowerCase() + ".jpg";
+      image.src = "images/" + imageName;
+      image.style.display = 'block';
+    }
     document.getElementById("add-product").addEventListener("click", () => {
       const container = document.getElementById("products-container");
-
       const div = document.createElement("div");
       div.className = "product-entry";
       div.innerHTML = `
         <label>Product:</label>
-        <select name="product[]"></select>
+        <select name="product[]" onchange="updateImage(this)"></select>
         <label>Quantity:</label>
         <input type="number" name="quantity[]" required />
         <label>Description:</label>
         <input type="text" name="description[]" />
+        <img class="product-image" src="" alt="Product Image" style="width: 100%; max-height: 200px; margin-top: 10px; display: none;" />
       `;
       container.appendChild(div);
       populateAllSelects();
     });
-
     loadProducts();
   </script>
 </body>
