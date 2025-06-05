@@ -1,60 +1,85 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Tiragon Product Order</title>
+  <title>Product Order | Tiragon Trading</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 40px; background-color: #f5f5f5; }
-    img { max-height: 80px; margin-bottom: 20px; }
-    form { background: white; display: inline-block; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    label, input, select, textarea { display: block; width: 100%; margin: 10px auto; max-width: 400px; }
-    .product-entry { border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; }
-    button { padding: 10px 20px; margin-top: 20px; cursor: pointer; }
-    .whatsapp { margin-top: 20px; display: inline-block; color: green; font-weight: bold; text-decoration: none; }
+    body { font-family: sans-serif; padding: 20px; direction: ltr; }
+    label { display: block; margin-top: 10px; }
+    select, input, textarea { width: 300px; margin-top: 5px; }
+    .product-entry { margin-bottom: 15px; }
+    #submit { padding: 10px 20px; margin-top: 20px; }
+    .whatsapp { margin-top: 20px; display: block; font-weight: bold; color: green; text-decoration: none; }
   </style>
 </head>
 <body>
-  <img src="logo.png" alt="Logo">
-  <form id="order-form" action="/submit" method="POST" enctype="multipart/form-data">
-    <label>Name: <input type="text" name="name" required></label>
-    <label>Phone: <input type="text" name="phone" required></label>
-    <label>Country: <input type="text" name="country" required></label>
+  <img src="logo.png" alt="Logo" style="height:60px;"><br><br>
+
+  <form id="order-form" method="POST" action="/submit" enctype="multipart/form-data">
+    <label>Name:</label><input type="text" name="name" required />
+    <label>Phone:</label><input type="text" name="phone" required />
+    <label>Country:</label><input type="text" name="country" required />
+
     <div id="products-container">
       <div class="product-entry">
-        <label>Product:
-          <select name="product[]">
-            <option>نايلکس 47*37 شيري تعداد پايين ضخيم (20)</option>
-            <option>نايلکس 55*45 شيري تعداد پايين ضخيم (20)</option>
-            <option>نايلکس 47*37 زرد تعداد بالا زرين ممتاز (20)</option>
-          </select>
-        </label>
-        <label>Quantity: <input type="number" name="quantity[]" required></label>
-        <label>Description: <input type="text" name="description[]"></label>
+        <label>Product:</label>
+        <select name="product[]"></select>
+        <label>Quantity:</label>
+        <input type="number" name="quantity[]" required />
+        <label>Description:</label>
+        <input type="text" name="description[]" />
       </div>
     </div>
-    <button type="button" id="add-product">➕ Add Product</button>
-    <button type="submit">📩 Submit Order</button>
+    <button type="button" id="add-product">➕ Add Product</button><br><br>
+    <button type="submit" id="submit">📩 Submit Order</button>
   </form>
+
   <a class="whatsapp" href="https://wa.me/971557068949" target="_blank">📞 Contact us on WhatsApp</a>
+
   <script>
+    let products = [];
+
+    function loadProducts() {
+      fetch('lang/en.json')
+        .then(res => res.json())
+        .then(data => {
+          products = data.products;
+          populateAllSelects();
+        });
+    }
+
+    function populateAllSelects() {
+      document.querySelectorAll("select[name='product[]']").forEach(select => {
+        const currentValue = select.value;
+        select.innerHTML = '';
+        products.forEach(p => {
+          const opt = document.createElement("option");
+          opt.value = p;
+          opt.innerText = p;
+          if (p === currentValue) opt.selected = true;
+          select.appendChild(opt);
+        });
+      });
+    }
+
     document.getElementById("add-product").addEventListener("click", () => {
       const container = document.getElementById("products-container");
+
       const div = document.createElement("div");
       div.className = "product-entry";
-      div.innerHTML = \`
-        <label>Product:
-          <select name="product[]">
-            <option>نايلکس 47*37 شيري تعداد پايين ضخيم (20)</option>
-            <option>نايلکس 55*45 شيري تعداد پايين ضخيم (20)</option>
-            <option>نايلکس 47*37 زرد تعداد بالا زرين ممتاز (20)</option>
-          </select>
-        </label>
-        <label>Quantity: <input type="number" name="quantity[]" required></label>
-        <label>Description: <input type="text" name="description[]"></label>
-      \`;
+      div.innerHTML = `
+        <label>Product:</label>
+        <select name="product[]"></select>
+        <label>Quantity:</label>
+        <input type="number" name="quantity[]" required />
+        <label>Description:</label>
+        <input type="text" name="description[]" />
+      `;
       container.appendChild(div);
+      populateAllSelects();
     });
+
+    loadProducts();
   </script>
 </body>
 </html>
