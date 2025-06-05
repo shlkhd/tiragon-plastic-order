@@ -1,4 +1,4 @@
-require("dotenv").config();
+
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
@@ -9,7 +9,9 @@ const fs = require("fs");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads");
+}
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -27,6 +29,7 @@ const upload = multer({ storage: storage });
 app.post("/submit", upload.single("attachment"), async (req, res) => {
   const { name, phone, country, product, weight, description } = req.body;
   const file = req.file;
+
   try {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Order");
@@ -64,7 +67,7 @@ app.post("/submit", upload.single("attachment"), async (req, res) => {
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-      },
+      }
     });
 
     const mailOptions = {
@@ -79,7 +82,7 @@ app.post("/submit", upload.single("attachment"), async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    res.send("Order submitted and emailed successfully!");
+    res.send("Order submitted and emailed successfully! Our experts will contact you shortly. Thank you!");
   } catch (err) {
     console.error("Error:", err);
     res.status(500).send("Server Error: " + err.message);
