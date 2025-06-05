@@ -1,4 +1,3 @@
-
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
@@ -9,9 +8,7 @@ const fs = require("fs");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-if (!fs.existsSync("uploads")) {
-  fs.mkdirSync("uploads");
-}
+if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -26,9 +23,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-app.post("/submit", upload.none(), async (req, res) => {
+app.post("/submit", upload.single("attachment"), async (req, res) => {
   const { name, phone, country, product, weight, description } = req.body;
-
+  const file = req.file;
   try {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Order");
@@ -58,8 +55,7 @@ app.post("/submit", upload.none(), async (req, res) => {
       });
     }
 
-    const filename = "order-" + Date.now() + ".xlsx";
-    const excelPath = path.join("uploads", filename);
+    const excelPath = "uploads/order-" + Date.now() + ".xlsx";
     await workbook.xlsx.writeFile(excelPath);
 
     const transporter = nodemailer.createTransport({
@@ -72,14 +68,17 @@ app.post("/submit", upload.none(), async (req, res) => {
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_TO || "soheildaad@gmail.com",
+      to: process.env.EMAIL_TO,
       subject: "New Order Received",
       text: "Please find the attached order file.",
-      attachments: [{ filename: "order.xlsx", path: excelPath }]
+      attachments: [
+        { filename: "order.xlsx", path: excelPath },
+        file ? { filename: file.originalname, path: file.path } : null
+      ].filter(Boolean)
     };
 
     await transporter.sendMail(mailOptions);
-    res.send("<script>alert('✅ سفارش شما دریافت شد. کارشناسان ما در اولین فرصت با شما تماس می‌گیرند.'); window.history.back();</script>");
+    res.send("Order submitted and emailed successfully!");
   } catch (err) {
     console.error("Error:", err);
     res.status(500).send("Server Error: " + err.message);
