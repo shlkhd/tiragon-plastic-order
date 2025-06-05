@@ -9,7 +9,9 @@ const fs = require("fs");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads");
+}
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -25,14 +27,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post("/submit", upload.single("attachment"), async (req, res) => {
-  let { name, phone, country, product, quantity, description } = req.body;
+  const { name, phone, country, product, weight, description } = req.body;
   const file = req.file;
 
   try {
-    product = Array.isArray(product) ? product : [product];
-    quantity = Array.isArray(quantity) ? quantity : [quantity];
-    description = Array.isArray(description) ? description : [description];
-
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Order");
 
@@ -47,10 +45,17 @@ app.post("/submit", upload.single("attachment"), async (req, res) => {
     worksheet.addRow({ field: "", value: "" });
     worksheet.addRow({ field: "Products", value: "" });
 
-    for (let i = 0; i < product.length; i++) {
+    if (Array.isArray(product)) {
+      for (let i = 0; i < product.length; i++) {
+        worksheet.addRow({
+          field: `Product ${i + 1}`,
+          value: `${product[i]} - ${weight[i]} - ${description[i]}`
+        });
+      }
+    } else {
       worksheet.addRow({
-        field: `Product ${i + 1}`,
-        value: `${product[i]} - ${quantity[i]} - ${description[i] || ''}`
+        field: "Product 1",
+        value: `${product} - ${weight} - ${description}`
       });
     }
 
@@ -67,7 +72,7 @@ app.post("/submit", upload.single("attachment"), async (req, res) => {
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_TO,
+      to: process.env.EMAIL_TO.split(","),
       subject: "New Order Received",
       text: "Please find the attached order file.",
       attachments: [
@@ -77,7 +82,7 @@ app.post("/submit", upload.single("attachment"), async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    res.send("Order submitted and emailed successfully! Our experts will contact you shortly.");
+    res.send("Order submitted and emailed successfully! Our experts will contact you shortly. Thank you!");
   } catch (err) {
     console.error("Error:", err);
     res.status(500).send("Server Error: " + err.message);
