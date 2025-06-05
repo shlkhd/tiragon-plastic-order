@@ -4,16 +4,95 @@
   <meta charset="UTF-8" />
   <title>Product Order | Tiragon Trading</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; direction: ltr; }
-    label { display: block; margin-top: 10px; }
-    select, input, textarea { width: 300px; margin-top: 5px; }
-    .product-entry { margin-bottom: 15px; }
-    #submit { padding: 10px 20px; margin-top: 20px; }
-    .whatsapp { margin-top: 20px; display: block; font-weight: bold; color: green; text-decoration: none; }
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      background-color: #fff;
+      width: 100%;
+      text-align: center;
+      padding: 30px 0 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    header img {
+      height: 150px;
+    }
+
+    form {
+      background: #fff;
+      padding: 30px;
+      margin-top: 20px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    select, input, textarea {
+      width: 100%;
+      margin-top: 5px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .product-entry {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #ccc;
+    }
+
+    #submit {
+      padding: 12px 20px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    #add-product {
+      margin-top: 15px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .whatsapp {
+      margin: 30px 0;
+      display: block;
+      font-weight: bold;
+      color: #25D366;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    .whatsapp:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <img src="logo.png" alt="Logo" style="height:150px;"><br><br>
+  <header>
+    <img src="logo.png" alt="Logo">
+  </header>
 
   <form id="order-form" method="POST" action="/submit" enctype="multipart/form-data">
     <label>Name:</label><input type="text" name="name" required />
@@ -30,6 +109,7 @@
         <input type="text" name="description[]" />
       </div>
     </div>
+
     <button type="button" id="add-product">➕ Add Product</button><br><br>
     <button type="submit" id="submit">📩 Submit Order</button>
   </form>
