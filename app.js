@@ -80,7 +80,7 @@ app.post("/submit", upload.single("attachment"), async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    res.send("Order submitted and emailed successfully!");
+    res.send("Order submitted and emailed successfully! Our experts will contact you shortly. Thank you!");
   } catch (err) {
     console.error("Error:", err);
     res.status(500).send("Server Error: " + err.message);
