@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +15,7 @@
 <body>
   <img src="logo.png" alt="Logo" style="height:60px;"><br><br>
 
-  <form id="order-form">
+  <form id="order-form" method="POST" action="/submit" enctype="multipart/form-data">
     <label>Name:</label><input type="text" name="name" required />
     <label>Phone:</label><input type="text" name="phone" required />
     <label>Country:</label><input type="text" name="country" required />
@@ -45,43 +44,39 @@
         .then(res => res.json())
         .then(data => {
           products = data.products;
-          populateSelects();
+          populateAllSelects();
         });
     }
 
-    function populateSelects() {
+    function populateAllSelects() {
       document.querySelectorAll("select[name='product[]']").forEach(select => {
-        const selectedValue = select.value; // Save the currently selected value
+        const currentValue = select.value;
         select.innerHTML = '';
         products.forEach(p => {
           const opt = document.createElement("option");
           opt.value = p;
           opt.innerText = p;
+          if (p === currentValue) opt.selected = true;
           select.appendChild(opt);
         });
-        if (selectedValue) {
-          select.value = selectedValue; // Restore the previous value
-        }
       });
     }
 
     document.getElementById("add-product").addEventListener("click", () => {
       const container = document.getElementById("products-container");
+
       const div = document.createElement("div");
       div.className = "product-entry";
       div.innerHTML = `
-        <label>Product:</label><select name="product[]"></select>
-        <label>Quantity:</label><input type="number" name="quantity[]" required />
-        <label>Description:</label><input type="text" name="description[]" />
+        <label>Product:</label>
+        <select name="product[]"></select>
+        <label>Quantity:</label>
+        <input type="number" name="quantity[]" required />
+        <label>Description:</label>
+        <input type="text" name="description[]" />
       `;
       container.appendChild(div);
-      populateSelects();
-    });
-
-    document.getElementById("order-form").addEventListener("submit", (e) => {
-      e.preventDefault();
-      alert("Your order has been received. Our team will contact you shortly.");
-      e.target.reset();
+      populateAllSelects();
     });
 
     loadProducts();
