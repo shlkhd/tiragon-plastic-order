@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tiragon Product Order</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 40px; background-color: #f5f5f5; }
+    img { max-height: 80px; margin-bottom: 20px; }
+    form { background: white; display: inline-block; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    label, input, select, textarea { display: block; width: 100%; margin: 10px auto; max-width: 400px; }
+    .product-entry { border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; }
+    button { padding: 10px 20px; margin-top: 20px; cursor: pointer; }
+    .whatsapp { margin-top: 20px; display: inline-block; color: green; font-weight: bold; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <img src="logo.png" alt="Logo">
+  <form id="order-form" action="/submit" method="POST" enctype="multipart/form-data">
+    <label>Name: <input type="text" name="name" required></label>
+    <label>Phone: <input type="text" name="phone" required></label>
+    <label>Country: <input type="text" name="country" required></label>
+    <div id="products-container">
+      <div class="product-entry">
+        <label>Product:
+          <select name="product[]">
+            <option>نايلکس 47*37 شيري تعداد پايين ضخيم (20)</option>
+            <option>نايلکس 55*45 شيري تعداد پايين ضخيم (20)</option>
+            <option>نايلکس 47*37 زرد تعداد بالا زرين ممتاز (20)</option>
+          </select>
+        </label>
+        <label>Quantity: <input type="number" name="quantity[]" required></label>
+        <label>Description: <input type="text" name="description[]"></label>
+      </div>
+    </div>
+    <button type="button" id="add-product">➕ Add Product</button>
+    <button type="submit">📩 Submit Order</button>
+  </form>
+  <a class="whatsapp" href="https://wa.me/971557068949" target="_blank">📞 Contact us on WhatsApp</a>
+  <script>
+    document.getElementById("add-product").addEventListener("click", () => {
+      const container = document.getElementById("products-container");
+      const div = document.createElement("div");
+      div.className = "product-entry";
+      div.innerHTML = \`
+        <label>Product:
+          <select name="product[]">
+            <option>نايلکس 47*37 شيري تعداد پايين ضخيم (20)</option>
+            <option>نايلکس 55*45 شيري تعداد پايين ضخيم (20)</option>
+            <option>نايلکس 47*37 زرد تعداد بالا زرين ممتاز (20)</option>
+          </select>
+        </label>
+        <label>Quantity: <input type="number" name="quantity[]" required></label>
+        <label>Description: <input type="text" name="description[]"></label>
+      \`;
+      container.appendChild(div);
+    });
+  </script>
+</body>
+</html>
