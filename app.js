@@ -41,7 +41,7 @@ app.post("/submit", upload.single("attachment"), async (req, res) => {
 
     worksheet.addRow({ field: "Name", value: name });
     worksheet.addRow({ field: "Phone", value: phone });
-    worksheet.addRow({ field: "address", value: address });
+    worksheet.addRow({ field: "Address", value: address });
     worksheet.addRow({ field: "", value: "" });
     worksheet.addRow({ field: "Products", value: "" });
 
