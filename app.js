@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post("/submit", upload.single("attachment"), async (req, res) => {
-  const { name, phone, country, product, quantity, description } = req.body;
+  const { name, phone, address, product, quantity, description } = req.body;
   const file = req.file;
 
   try {
@@ -41,7 +41,7 @@ app.post("/submit", upload.single("attachment"), async (req, res) => {
 
     worksheet.addRow({ field: "Name", value: name });
     worksheet.addRow({ field: "Phone", value: phone });
-    worksheet.addRow({ field: "Country", value: country });
+    worksheet.addRow({ field: "address", value: address });
     worksheet.addRow({ field: "", value: "" });
     worksheet.addRow({ field: "Products", value: "" });
 
