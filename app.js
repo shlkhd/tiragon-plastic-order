@@ -79,7 +79,8 @@ app.post("/submit", upload.single("attachment"), async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    res.send("Order submitted and emailed successfully! Our experts will contact you shortly. Thank you!");
+    <p>Order submitted and emailed successfully! Our experts will contact you shortly. Thank you!</p>
+  <p><a href="https://trt.ae/plastic-bags.html" style="color: #007BFF; text-decoration: underline;">← Back to Order Page</a></p>
   } catch (err) {
     console.error("Error:", err);
     res.status(500).send("Server Error: " + err.message);
